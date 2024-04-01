@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 
 class CarController extends Controller
@@ -22,6 +23,8 @@ class CarController extends Controller
         ]);
     }
 
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -35,6 +38,7 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'color' => 'required',
@@ -43,7 +47,8 @@ class CarController extends Controller
             'registration_no' => 'required|unique:cars',
         ]);
 
-        Car::create($request->all());
+        $carDetail = Car::create($request->all());
+        return new JsonResource($carDetail, 201);
     }
 
     /**
@@ -83,6 +88,7 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
+
         $car->delete();
         return Inertia::render('Car/Index')->with('success', 'Car deleted successfully.');
     }

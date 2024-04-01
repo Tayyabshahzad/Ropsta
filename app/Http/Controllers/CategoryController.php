@@ -46,7 +46,10 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = Category::where('id',$id);
+        return Inertia::render('Categories/Index', [
+            'category' => $category
+        ]);
     }
 
     /**
@@ -60,17 +63,15 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-        public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category)
     {
+
         $request->validate([
             'name' => 'required|unique:categories|max:255',
         ]);
-
         $category->update($request->all());
-
         // Fetch all categories after updating
         $categories = Category::all();
-
         // Return updated categories and success message
         return Inertia::render('Categories/Index')->with([
             'categories' => $categories,
@@ -85,7 +86,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-
         return Inertia::render('Categories/Index')->with('success', 'Category deleted successfully.');
     }
 }

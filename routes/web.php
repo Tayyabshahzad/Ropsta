@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('car', CarController::class);
 
 
+
 });
 
 require __DIR__.'/auth.php';
