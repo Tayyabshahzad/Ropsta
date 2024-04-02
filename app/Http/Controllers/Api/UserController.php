@@ -28,14 +28,21 @@ class UserController extends Controller
 
         // Attempt to authenticate user
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response([
+                "status" =>false,
+                "message" => "Unauthorized"
+           ],401);
         }
 
         // Generate JWT token
         $token = JWTAuth::fromUser(Auth::user());
 
         // Return token to the client
-        return response()->json(compact('token'));
+        return response([
+             "token" =>$token,
+             "status" =>true,
+
+        ],200);
     }
 
 
@@ -60,6 +67,10 @@ class UserController extends Controller
         ]);
         Mail::to($user->email)->send(new WelcomeEmail($user,$password));
         // Return token to the client
-        return response()->json(compact('user'));
+        return response([
+            "status" =>true,
+            "message" => "User Created - Please Check Your Email For Password"
+       ],200);
+
     }
 }
