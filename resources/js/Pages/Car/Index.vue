@@ -153,7 +153,7 @@ import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import useVuelidate from "@vuelidate/core";
-import {email,required, helpers } from "@vuelidate/validators";
+import {required, helpers } from "@vuelidate/validators";
 import axios from "axios";
 import DataTable from 'datatables.net-vue3';
 async function remoteValidation(value) {

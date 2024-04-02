@@ -11,12 +11,11 @@ class CategoryController extends Controller
 
     public function index()
     {
-
-        $categories = Category::all();
-        return Inertia::render('Categories/Index', [
-            'categories' => $categories
-        ]);
-       // return view('categories.index', compact('categories'));
+        $categories = Category::select('id', 'name')->get();
+        return response([
+            'categories' => $categories,
+            'status' => true,
+        ],200);
     }
 
     /**
@@ -35,8 +34,11 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|unique:categories|max:255',
         ]);
-        Category::create($request->all());
-        return Inertia::render('Categories/Index')->with('success', 'Category created successfully.');
+        $category = Category::create($request->all());
+        return response([
+            'category' => $category,
+            'status' => true,
+        ],200);
     }
 
     /**
@@ -45,9 +47,6 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         $category = Category::where('id',$id);
-        return Inertia::render('Categories/Index', [
-            'category' => $category
-        ]);
     }
 
     /**
@@ -61,29 +60,31 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
-
         $request->validate([
-            'name' => 'required|unique:categories|max:255',
+            'name' => 'required|unique:categories,name,' . $id . '|max:255',
         ]);
+
+        $category = Category::findOrFail($id);
         $category->update($request->all());
-        // Fetch all categories after updating
-        $categories = Category::all();
-        // Return updated categories and success message
-        return Inertia::render('Categories/Index')->with([
-            'categories' => $categories,
-            'success' => 'Category updated successfully.'
-        ]);
+        return response([
+            'category' => $category,
+            'status' => true,
+        ], 200);
     }
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy($id)
     {
+        $category = Category::findOrFail($id);
         $category->delete();
-        return Inertia::render('Categories/Index')->with('success', 'Category deleted successfully.');
+
+        return response([
+            'status' => true,
+        ], 200);
     }
 }
